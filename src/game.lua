@@ -34,8 +34,19 @@ function game.draw()
 end
 
 local function move(moveable, dt)
-  moveable.x = moveable.x + moveable.speed * moveable.direction[1] * dt
-  moveable.y = moveable.y + moveable.speed * moveable.direction[2] * dt
+  local x = moveable.x + moveable.speed * moveable.direction[1] * dt
+  local y = moveable.y + moveable.speed * moveable.direction[2] * dt
+  
+  local function is_passable(i, j)
+    return game.map.get(i, j) ~= "Building"
+  end
+  
+  if is_passable(math.floor(x), math.floor(y)) and
+    is_passable(math.floor(x), math.ceil(y)) and
+    is_passable(math.ceil(x), math.floor(y)) and
+    is_passable(math.ceil(x), math.ceil(y)) then
+      moveable.x, moveable.y = x, y
+  end
 end
 
 local function set_direction(moveable, dx, dy)
