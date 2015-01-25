@@ -46,10 +46,11 @@ local function move(moveable, dt)
     return b ~= "Building" and b ~= "Shop" and b ~= "Work" and b ~= "Home"
   end
   
-  if is_passable(math.floor(x), math.floor(y)) and
-    is_passable(math.floor(x), math.ceil(y)) and
-    is_passable(math.ceil(x), math.floor(y)) and
-    is_passable(math.ceil(x), math.ceil(y)) then
+  local eps = 0.05
+  if is_passable(math.floor(x + eps), math.floor(y + eps)) and
+    is_passable(math.floor(x + eps), math.ceil(y - eps)) and
+    is_passable(math.ceil(x - eps), math.floor(y + eps)) and
+    is_passable(math.ceil(x - eps), math.ceil(y - eps)) then
       moveable.x, moveable.y = x, y
   end
 end
