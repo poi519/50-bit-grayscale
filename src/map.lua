@@ -38,6 +38,11 @@ function map.get(i, j)
   end
 end
 
+function map.is_passable(i, j)
+  local b = map.get(i, j)
+  return b ~= "Building" and b ~= "Shop" and b ~= "Work" and b ~= "Home"
+end
+
 map.load("resources/map.txt")
 
 return map

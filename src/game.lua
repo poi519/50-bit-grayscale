@@ -2,6 +2,8 @@ local game = {}
 
 game.map = require "src/map"
 game.player = require "src/player"
+game.pedestrian_manager = require "src/pedestrian_manager"
+
 
 local UNIT = 48
 local PLAYER_COLOR = {255, 255, 255}
@@ -13,11 +15,19 @@ local BLOCK_COLORS = {
   ["Shop"] = {100, 150, 100},
   ["Work"] = {100, 100, 150}
 }
+local PEDESTRIAN_COLOR = {125, 125, 125}
 
 function game.init()
   local street_sounds = love.audio.newSource("resources/audio/street5.mp3", "stream")
   street_sounds:setLooping(true)
   love.audio.play(street_sounds)
+  game.pedestrian_manager.init(game.map)
+end
+
+local function to_screen_cordinates(x, y, w, h)
+   local sx = (x - game.player.x) * UNIT + w/2
+   local sy = (y - game.player.y) * UNIT + h/2
+   return sx, sy
 end
 
 function game.draw()
@@ -33,41 +43,24 @@ function game.draw()
   for i = i0, i1 do
     for j = j0, j1 do
       lg.setColor(BLOCK_COLORS[game.map.get(i, j)])
-      local cx = (i - game.player.x) * UNIT + w/2
-      local cy = (j - game.player.y) * UNIT + h/2
+      local cx, cy = to_screen_cordinates(i, j, w, h)
       lg.rectangle("fill", cx - UNIT/2, cy - UNIT/2, UNIT, UNIT)
     end
   end
+  -- draw pedestrians
+  for _, p in ipairs(game.pedestrian_manager.array) do
+    local sx, sy = to_screen_cordinates(p.x, p.y, w, h)
+    lg.setColor(PEDESTRIAN_COLOR)
+    lg.circle("fill", sx, sy, 1/2 * UNIT, 50)
+  end
    -- draw player
   lg.setColor(PLAYER_COLOR)
-  love.graphics.circle("fill", w/2, h/2, 1/2 * UNIT, 40)
-end
-
-local function move(moveable, dt)
-  local x = moveable.x + moveable.speed * moveable.direction[1] * dt
-  local y = moveable.y + moveable.speed * moveable.direction[2] * dt
-  
-  local function is_passable(i, j)
-    local b = game.map.get(i, j)
-    return b ~= "Building" and b ~= "Shop" and b ~= "Work" and b ~= "Home"
-  end
-  
-  local eps = 0.05
-  if is_passable(math.floor(x + eps), math.floor(y + eps)) and
-    is_passable(math.floor(x + eps), math.ceil(y - eps)) and
-    is_passable(math.ceil(x - eps), math.floor(y + eps)) and
-    is_passable(math.ceil(x - eps), math.ceil(y - eps)) then
-      moveable.x, moveable.y = x, y
-  end
-end
-
-local function set_direction(moveable, dx, dy)
-    moveable.direction[1] = dx
-    moveable.direction[2] = dy
+  lg.circle("fill", w/2, h/2, 1/2 * UNIT, 50)
 end
 
 function game.update(dt)
-  move(game.player, dt)
+  game.player:move(dt, game.map)
+  game.pedestrian_manager.update(dt, game.map)
 end
 
 function game.keypressed(key)
@@ -82,13 +75,13 @@ function game.keypressed(key)
     dx, dy = 1, 0
   end
   if dx and dy then
-    set_direction(game.player, dx, dy)
+    game.player:set_direction(dx, dy)
   end
 end
 
 function game.keyreleased(key)
   if not love.keyboard.isDown('w', 'a', 's', 'd') then
-    set_direction(game.player, 0, 0)
+    game.player:set_direction(0, 0)
   end
 end
 

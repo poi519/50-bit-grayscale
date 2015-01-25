@@ -8,6 +8,10 @@ end
 
 set_current_stage(stages.game)
 
+function love.load()
+  math.randomseed(os.time())
+end
+
 function love.draw()
   current_stage.draw()
 end

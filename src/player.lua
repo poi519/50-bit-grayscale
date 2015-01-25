@@ -1,8 +1,5 @@
-local player = {
-  x = 0,
-  y = 0,
-  speed = 2,
-  direction = {0, 0}
-}
+local Moveable = require "src/Moveable"
+
+local player = Moveable.new()
 
 return player
