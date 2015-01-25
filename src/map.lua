@@ -1,26 +1,43 @@
 local map = {}
 
 map.array = {}
+map.width = 0
+map.height = 0
 
-map.width = 4
-map.height = 4
+local dict = {
+  [' '] = "Pedestrian area",
+  ['x'] = "Building",
+  ['.'] = "Traffic area",
+  ['h'] = "Home",
+  ['w'] = "Work",
+  ['s'] = "Shop"
+}
 
-for i = 1, 4 do
-  for j = 1, 4 do
-    if i == j then
-      table.insert(map.array, "Pedestrian area")
-    else
-      table.insert(map.array, "Building")
+function map.load(filename)
+  map.array = {}
+  map.width = 0
+  map.height = 0
+  
+  for line in love.filesystem.lines(filename) do
+    map.height = map.height + 1
+    if map.width == 0 then
+      map.width = line:len()
+    end
+    for i = 1, map.width do
+      local c = line:sub(i, i)
+      table.insert(map.array, dict[c] or "Pedestrian area")
     end
   end
 end
 
 function map.get(i, j)
   if 0 < i and i <= map.width and 0 < j and j <= map.height  then
-    return map.array[(j-1) * 4 + i]
+    return map.array[(j-1) * map.width + i]
   else 
     return "Pedestrian area"
   end
 end
+
+map.load("resources/map.txt")
 
 return map

@@ -7,7 +7,11 @@ local UNIT = 48
 local PLAYER_COLOR = {255, 255, 255}
 local BLOCK_COLORS = {
   ["Pedestrian area"] = {150, 150, 150},
-  ["Building"] = {50, 50, 50}
+  ["Building"] = {50, 50, 50},
+  ["Traffic area"] = {200, 200, 200},
+  ["Home"] = {100, 100, 100},
+  ["Shop"] = {100, 150, 100},
+  ["Work"] = {100, 100, 150}
 }
 
 function game.draw()
@@ -38,7 +42,8 @@ local function move(moveable, dt)
   local y = moveable.y + moveable.speed * moveable.direction[2] * dt
   
   local function is_passable(i, j)
-    return game.map.get(i, j) ~= "Building"
+    local b = game.map.get(i, j)
+    return b ~= "Building" and b ~= "Shop" and b ~= "Work" and b ~= "Home"
   end
   
   if is_passable(math.floor(x), math.floor(y)) and
