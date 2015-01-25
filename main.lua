@@ -1,6 +1,12 @@
 -- Global
 stages = require "src/stages"
-current_stage = stages.game
+
+function set_current_stage(stage)
+  current_stage = stage
+  if current_stage.init then current_stage.init() end
+end
+
+set_current_stage(stages.game)
 
 function love.draw()
   current_stage.draw()

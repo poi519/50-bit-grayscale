@@ -14,6 +14,12 @@ local BLOCK_COLORS = {
   ["Work"] = {100, 100, 150}
 }
 
+function game.init()
+  local street_sounds = love.audio.newSource("resources/audio/street5.mp3", "stream")
+  street_sounds:setLooping(true)
+  love.audio.play(street_sounds)
+end
+
 function game.draw()
   local lg = love.graphics
   local h = lg.getHeight()

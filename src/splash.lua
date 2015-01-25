@@ -24,7 +24,7 @@ local T_MAX = 3
 
 function splash.update(dt)
   t = t + dt
-  if t > T_MAX then current_stage = stages.game end
+  if t > T_MAX then set_current_stage(stages.game) end
 end
 
 return splash
