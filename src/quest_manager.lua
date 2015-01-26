@@ -1,9 +1,13 @@
-local quest_manager = {
-  money = 0,
-  starvation = 0,
-  minutes = 0,
-  day = 1
-}
+local quest_manager = {}
+
+function quest_manager.reset()
+  quest_manager.money = 0
+  quest_manager.starvation = 0
+  quest_manager.minutes = 0
+  quest_manager.day = 1
+end
+
+quest_manager.reset()
 
 local quest_index = 1
 
@@ -19,11 +23,12 @@ function quest_manager.next_quest(game)
 end
 
 function quest_manager.setup_quest(game)
+  quest_manager.minutes = 0
   game.map.spawn(game.player, quest_manager.quest.start)
   game.pedestrian_manager.init(game.map)
 end
  
-local TIME_SCALE = 20
+local TIME_SCALE = 30
 
 function quest_manager.update(dt, game)
   quest_manager.minutes = quest_manager.minutes +  dt * TIME_SCALE / 60

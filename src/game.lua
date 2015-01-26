@@ -1,5 +1,6 @@
 local game = {}
 
+local Moveable = require "src/Moveable"
 local map = require "src/map"
 local player = require "src/player"
 local pedestrian_manager = require "src/pedestrian_manager"
@@ -19,12 +20,15 @@ local BLOCK_COLORS = {
   ["Work"] = {100, 100, 150}
 }
 local PEDESTRIAN_COLOR = {125, 125, 125}
+local INFO_FONT = love.graphics.newFont("resources/fonts/consola.ttf", 16)
+local BLACK, WHITE = {0, 0, 0}, {255, 255, 255}
 
 function game.init()
   local street_sounds = love.audio.newSource("resources/audio/street5.mp3", "static")
   street_sounds:setLooping(true)
   love.audio.play(street_sounds)
-  pedestrian_manager.init(map)
+  player.speed = Moveable.new().speed
+  quest_manager.reset()
   quest_manager.setup_quest(game)
 end
 
@@ -61,11 +65,18 @@ function game.draw()
   lg.setColor(PLAYER_COLOR)
   lg.circle("fill", w/2, h/2, 1/2 * UNIT, 50)
   -- draw info
-  lg.setNewFont("resources/fonts/times.ttf", 16)
+  lg.setColor(BLACK)
+  lg.rectangle("fill", 0, h - 32, w, h)
+  lg.setColor(WHITE)
+  lg.setFont(INFO_FONT)
   lg.printf(
     quest_manager.quest.message,
-    0, h - 32, w, 'center'
+    0, h - 24, w, 'center'
   )
+  local minutes = math.floor(quest_manager.minutes)
+  if minutes < 10 then minutes = "0" .. minutes end
+  local time = quest_manager.quest.hour .. ":" .. minutes
+  lg.printf(time, 0, h - 24, w, 'right')
 end
 
 function game.update(dt)

@@ -6,7 +6,7 @@ function set_current_stage(stage)
   if current_stage.init then current_stage.init() end
 end
 
-set_current_stage(stages.game)
+set_current_stage(stages.splash)
 
 function love.load()
   math.randomseed(os.time())
