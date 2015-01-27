@@ -28,7 +28,7 @@ function quest_manager.setup_quest(game)
   game.pedestrian_manager.init(game.map)
 end
  
-local TIME_SCALE = 30
+local TIME_SCALE = 45
 
 function quest_manager.update(dt, game)
   quest_manager.minutes = quest_manager.minutes +  dt * TIME_SCALE / 60
