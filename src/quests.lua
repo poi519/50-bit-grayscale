@@ -22,7 +22,7 @@ return {
     start = "Home",
     destination = "Work",
     hour = 8,
-    message = "Проснись, Нео! Тебе нужно добраться на работу до 9:00!",
+    message = "Проснись, Нео! Тебе нужно добраться на работу к 9:00!",
     success = function(game)
       local qm = game.quest_manager
       qm.money = qm.money + SALARY

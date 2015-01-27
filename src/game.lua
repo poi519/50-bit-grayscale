@@ -22,6 +22,7 @@ local BLOCK_COLORS = {
 local PEDESTRIAN_COLOR = {125, 125, 125}
 local INFO_FONT = love.graphics.newFont("resources/fonts/consola.ttf", 16)
 local BLACK, WHITE = {0, 0, 0}, {255, 255, 255}
+local ARROW_COLOR = {0, 200, 200}
 
 function game.init()
   local street_sounds = love.audio.newSource("resources/audio/street5.mp3", "static")
@@ -69,14 +70,30 @@ function game.draw()
   lg.rectangle("fill", 0, h - 32, w, h)
   lg.setColor(WHITE)
   lg.setFont(INFO_FONT)
+  local quest = quest_manager.quest
   lg.printf(
-    quest_manager.quest.message,
+    quest.message,
     0, h - 24, w, 'center'
   )
   local minutes = math.floor(quest_manager.minutes)
   if minutes < 10 then minutes = "0" .. minutes end
-  local time = quest_manager.quest.hour .. ":" .. minutes
+  local time = quest_manager.day .. ":" ..
+    quest.hour .. ":" .. minutes
   lg.printf(time, 0, h - 24, w, 'right')
+  lg.printf("$" .. quest_manager.money, 0, h - 24, w, "left")
+  -- draw quest direction
+  local destination = map.centers[quest.destination]
+  local a = math.atan2(destination[2] - player.y, destination[1] - player.x)
+  local sin, cos = math.sin(a), math.cos(a)
+  lg.setColor(ARROW_COLOR)
+  lg.setLineWidth(2)
+  lg.line(
+    w/2 - UNIT/2.2 * cos, h/2 - UNIT/2.2 * sin,
+    w/2 + UNIT/2.2 * cos, h/2 + UNIT/2.2 * sin,
+    w/2 - UNIT/5 * sin, h/2 + UNIT/5 * cos,
+    w/2 + UNIT/5 * sin, h/2 - UNIT/5 * cos,
+    w/2 + UNIT/2.2 * cos, h/2 + UNIT/2.2 * sin
+  )
 end
 
 function game.update(dt)
@@ -87,13 +104,13 @@ end
 
 function game.keypressed(key)
   local dx, dy
-  if key == 'w' then
+  if key == 'w'or key == 'up' then
     dx, dy = 0, -1
-  elseif key == 'a' then
+  elseif key == 'a' or key == 'left' then
     dx, dy = -1, 0
-  elseif key == 's' then
+  elseif key == 's' or key == 'down' then
     dx, dy = 0, 1
-  elseif key == 'd' then
+  elseif key == 'd' or key == 'right' then
     dx, dy = 1, 0
   end
   if dx and dy then
@@ -102,7 +119,8 @@ function game.keypressed(key)
 end
 
 function game.keyreleased(key)
-  if not love.keyboard.isDown('w', 'a', 's', 'd') then
+  if not love.keyboard.isDown('w', 'a', 's', 'd', 'up', 'down', 'left', 'right')
+  then
     player:set_direction(0, 0)
   end
 end
