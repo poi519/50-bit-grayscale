@@ -1,7 +1,7 @@
 local splash = {}
 
 local BIG_FONT = love.graphics.newFont("resources/fonts/times.ttf", 32)
-local SMALL_FONT = love.graphics.newFont("resources/fonts/times.ttf", 16)
+local SMALL_FONT = love.graphics.newFont("resources/fonts/consola.ttf", 16)
 function splash.draw()
   local h = love.graphics.getHeight()
   local w = love.graphics.getWidth()

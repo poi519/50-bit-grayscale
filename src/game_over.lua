@@ -1,4 +1,6 @@
-local game_over = {}
+local game_over = {
+  message = ""
+}
 
 local BIG_FONT = love.graphics.newFont("resources/fonts/times.ttf", 64)
 local SMALL_FONT = love.graphics.newFont("resources/fonts/times.ttf", 16)
@@ -8,9 +10,10 @@ function game_over.draw()
 
   love.graphics.setFont(BIG_FONT)
   love.graphics.printf(
-    "GAME OVER",
+    "GAME OVER\n" .. message,
     0, h / 2, w, 'center'
   )
+  
 end
 
 local t = 0

@@ -26,6 +26,7 @@ function quest_manager.setup_quest(game)
   quest_manager.minutes = 0
   game.map.spawn(game.player, quest_manager.quest.start)
   game.pedestrian_manager.init(game.map)
+  game.gopnik_manager.init(game.map)
 end
  
 local TIME_SCALE = 45

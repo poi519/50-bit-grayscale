@@ -35,4 +35,31 @@ function Moveable:set_direction(dx, dy)
     self.direction[2] = dy
 end
 
+Moveable.DIRECTIONS = {
+  {1, 0},
+  {0, 1},
+  {0, 0},
+  {0, -1},
+  {-1, 0}
+}
+
+local DIRECTIONS = Moveable.DIRECTIONS
+
+function Moveable.random_place(map, inverse_probability)
+  local array = {}
+  for j = 1, map.height do
+    for i = 1, map.width do
+      if map.get(i, j) == "Pedestrian area" and
+      math.random(inverse_probability) == 1 then
+        local p = Moveable.new()
+        p.x, p.y = i, j
+        local d = DIRECTIONS[math.random(#DIRECTIONS)]
+        p:set_direction(d[1], d[2])
+        table.insert(array, p)
+      end
+    end 
+  end
+  return array
+end
+
 return Moveable

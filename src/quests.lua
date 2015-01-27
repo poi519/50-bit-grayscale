@@ -14,7 +14,8 @@ local function next_day(game)
     game.player.speed = game.player.speed - 0.1 * PLAYER_BASE_SPEED
     qm.starvation = qm.starvation + 1
     game.last_message = starvation_message[qm.starvation]
-    if qm.starvation > 3 then 
+    if qm.starvation > 3 then
+      stages.game_over.message = "Дней: " .. qm.day
       set_current_stage(stages.game_over)
     end
   end

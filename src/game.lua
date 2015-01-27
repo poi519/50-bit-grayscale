@@ -7,9 +7,10 @@ local map = require "src/map"
 local player = require "src/player"
 local pedestrian_manager = require "src/pedestrian_manager"
 local quest_manager = require "src/quest_manager"
+local gopnik_manager = require "src/gopnik_manager"
 
-game.map, game.player, game.pedestrian_manager, game.quest_manager =
-  map, player, pedestrian_manager, quest_manager
+game.map, game.player, game.pedestrian_manager, game.quest_manager, game.gopnik_manager =
+  map, player, pedestrian_manager, quest_manager, gopnik_manager
 
 local UNIT = 48
 local PLAYER_COLOR = {255, 255, 255}
@@ -34,6 +35,13 @@ function game.init()
   player.speed = Moveable.new().speed
   quest_manager.reset()
   quest_manager.setup_quest(game)
+end
+
+function game.update(dt)
+  player:move(dt, map)
+  pedestrian_manager.update(dt, map)
+  quest_manager.update(dt, game)
+  gopnik_manager.update(dt, game)
 end
 
 local function to_screen_cordinates(x, y, w, h)
@@ -63,6 +71,12 @@ function game.draw()
   for _, p in ipairs(pedestrian_manager.array) do
     local sx, sy = to_screen_cordinates(p.x, p.y, w, h)
     lg.setColor(PEDESTRIAN_COLOR)
+    lg.circle("fill", sx, sy, 1/2 * UNIT, 50)
+  end
+  -- draw gopnikov
+  for _, g in ipairs(gopnik_manager.array) do
+    local sx, sy = to_screen_cordinates(g.x, g.y, w, h)
+    lg.setColor(BLACK)
     lg.circle("fill", sx, sy, 1/2 * UNIT, 50)
   end
   -- draw player
@@ -96,12 +110,6 @@ function game.draw()
     w/2 + UNIT/5 * sin, h/2 - UNIT/5 * cos,
     w/2 + UNIT/2.2 * cos, h/2 + UNIT/2.2 * sin
   )
-end
-
-function game.update(dt)
-  player:move(dt, map)
-  pedestrian_manager.update(dt, map)
-  quest_manager.update(dt, game)
 end
 
 function game.keypressed(key)
